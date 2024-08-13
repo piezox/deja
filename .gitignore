@@ -1,0 +1,10 @@
+# Ignore the actual configuration file
+qconfig.json
+
+# Ignore any .env files that might contain sensitive information
+*.env
+
+# Ignore common Python-related files
+__pycache__/
+*.py[cod]
+*$py.class
