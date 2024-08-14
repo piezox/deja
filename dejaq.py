@@ -1,6 +1,7 @@
 import argparse
 import boto3
 import json
+from urllib.parse import urlparse
 
 def load_config(config_file='qconfig.json', template_file='qconfig.template.json'):
     """
@@ -83,6 +84,63 @@ def upload_to_aws_q(source, config):
         except Exception as e:
             print(f"An error occurred: {str(e)}")
 
+def is_url(path):
+    """
+    Check if the given path is a valid URL.
+    
+    :param path: String to check
+    :return: True if path is a valid URL, False otherwise
+    """
+    try:
+        result = urlparse(path)
+        return all([result.scheme, result.netloc])
+    except ValueError:
+        return False
+
+def add_url_to_webcrawler(source, crawler_name, config):
+    """
+    Add a URL to an existing web crawler data source in AWS Q.
+
+    :param source: URL to add as a seed URL
+    :param crawler_name: Name of the existing web crawler data source
+    :param config: Dictionary containing AWS Q configuration
+    """
+    # Initialize AWS Q client
+    q_business = boto3.client('qbusiness', region_name=config['region'])
+
+    try:
+        # Get the existing web crawler data source
+        data_sources = q_business.list_data_sources(
+            applicationId=config['application_id'],
+            indexId=config['index_id'],
+        )
+        print(f"list_data_sources response: {data_sources}")
+
+        existing_crawler = next((ds for ds in data_sources['type'] if ds['displayName'] == crawler_name), None)
+
+        if existing_crawler:
+            # Add the new URL to the existing seed URLs
+            existing_seed_urls = [conn['SeedUrl'] for conn in existing_crawler['SeedUrlConnections']]
+            existing_seed_urls.append(source)
+
+            # Update the web crawler data source with the new seed URLs
+            q_business.update_data_source(
+                applicationId=config['application_id'],
+                DataSourceId=existing_crawler['DataSourceId'],
+                indexId=config['index_id'],
+                Configuration={
+                    'Name': crawler_name,
+                    'SeedUrlConnections': [{'SeedUrl': url} for url in existing_seed_urls],
+                    'Authentication': existing_crawler['Authentication']
+                }
+            )
+
+            print(f"Successfully added URL '{source}' to web crawler '{crawler_name}'")
+        else:
+            print(f"Web crawler '{crawler_name}' not found")
+    except Exception as e:
+        print(f"An error occurred: {str(e)}")
+
 def main():
     """
     Main function to handle command-line arguments and initiate upload process.
@@ -91,6 +149,7 @@ def main():
     # Set up command-line argument parser
     parser = argparse.ArgumentParser(description='Upload a URL or file to AWS Q')
     parser.add_argument('source', help='URL or file path to upload')
+    parser.add_argument('--crawler', required=True, help='Name of the existing web crawler data source')
     parser.add_argument('--config', default='qconfig.json', help='Path to the configuration file')
 
     # Parse command-line arguments
@@ -102,8 +161,13 @@ def main():
     # Load configuration from file
     config = load_config(args.config)
 
-    # Initiate upload process
-    upload_to_aws_q(args.source, config)
+    # Determine if source is URL or local file and prepare content
+    if is_url(args.source):
+        # Handle URL: fetch content and use URL basename or full URL as title
+        add_url_to_webcrawler(args.source, args.crawler, config)
+    else:
+        # Handle local file: read file content and use filename as title
+        upload_to_aws_q(args.source, config)
 
 if __name__ == "__main__":
     main()

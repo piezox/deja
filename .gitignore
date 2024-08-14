@@ -8,3 +8,6 @@ qconfig.json
 __pycache__/
 *.py[cod]
 *$py.class
+
+# Ignore Misc
+RAND_RR1478.pdf
