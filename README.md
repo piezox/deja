@@ -76,6 +76,7 @@ python aws_q_uploader.py path/to/your/file --crawler your-crawler-name --config 
 ## Error Handling
 
 The script includes error handling for common issues such as:
+
 - Missing configuration files
 - Invalid JSON in configuration files
 - File not found errors
@@ -116,7 +117,3 @@ SOFTWARE.
 ```
 
 This MIT License allows for unrestricted reuse and modification of this code by any developer, including for commercial purposes, provided that the above copyright notice and permission notice are included in all copies or substantial portions of the Software.
-
-## Disclaimer
-
-This script is provided as-is, without any warranties. Always test thoroughly before using in a production environment.
