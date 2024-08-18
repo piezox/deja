@@ -1,6 +1,6 @@
-# AWS Q CLI Uploader
+# DejaQ: AWS Q CLI Uploader
 
-This Python script provides a command-line interface for uploading files or adding URLs to AWS Q. It supports both local file uploads and adding URLs to existing web crawler data sources in AWS Q.
+DejaQ is a Python package that provides a command-line interface for uploading files or adding URLs to AWS Q. It supports both local file uploads and adding URLs to existing web crawler data sources in AWS Q.
 
 ## Features
 
@@ -17,22 +17,22 @@ This Python script provides a command-line interface for uploading files or addi
 
 ## Installation
 
-1. Clone this repository or download the script.
-
-2. Install the required Python libraries:
-
+1. Clone this repository:
    ```
-   pip install boto3
+   git clone https://github.com/yourusername/dejaq.git
+   cd dejaq
    ```
 
-3. Set up your AWS credentials. You can do this by:
-   - Configuring the AWS CLI with `aws configure`
-   - Setting environment variables (`AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`)
-   - Using an AWS credentials file
+2. Install the package:
+   ```
+   pip install -e .
+   ```
+
+   This will install DejaQ and its dependencies.
 
 ## Configuration
 
-1. Create a `qconfig.json` file in the same directory as the script with the following structure:
+1. Create a `qconfig.json` file in the `awsutils` directory with the following structure:
 
    ```json
    {
@@ -49,71 +49,77 @@ This Python script provides a command-line interface for uploading files or addi
 
 ## Usage
 
-### Uploading a local file
+You can use DejaQ either by running the Python module or by using the installed command-line tool.
+
+### Using the Python module
 
 ```
-python aws_q_uploader.py path/to/your/file --crawler your-crawler-name
+python -m dejaq [source] [options]
 ```
 
-### Adding a URL to a web crawler
+### Using the command-line tool
 
 ```
-python aws_q_uploader.py https://example.com --crawler your-crawler-name
+dejaq [source] [options]
 ```
 
-### Using a custom configuration file
+### Arguments and Options
+
+- `source`: The URL or file path to upload (required)
+- `--crawler`: Name of the existing web crawler data source (required for URLs)
+- `--config`: Path to the configuration file (optional, defaults to 'qconfig.json')
+- `--profile`: AWS profile to use (optional, defaults to 'default')
+
+### Examples
+
+1. Upload a file:
+   ```
+   dejaq /path/to/your/file.txt
+   ```
+
+2. Add a URL to a web crawler:
+   ```
+   dejaq https://example.com --crawler MyCrawler
+   ```
+
+3. Use a custom configuration file:
+   ```
+   dejaq /path/to/your/file.txt --config /path/to/custom/config.json
+   ```
+
+4. Use a specific AWS profile:
+   ```
+   dejaq /path/to/your/file.txt --profile my-aws-profile
+   ```
+
+## Using the run_dejaq.sh Script
+
+For Unix-based systems, you can use the provided `run_dejaq.sh` script:
+
+1. Make the script executable:
+   ```
+   chmod +x run_dejaq.sh
+   ```
+
+2. Run DejaQ using the script:
+   ```
+   ./run_dejaq.sh [source] [options]
+   ```
+
+This script will create and manage a virtual environment for you.
+
+## Running Tests
+
+To run the unit tests, use the following command from the project root directory:
 
 ```
-python aws_q_uploader.py path/to/your/file --crawler your-crawler-name --config path/to/your/config.json
+python -m unittest discover tests
 ```
-
-## Command-line Arguments
-
-- `source`: The path to the local file or the URL to upload (required)
-- `--crawler`: The name of the existing web crawler data source (required)
-- `--config`: Path to the configuration file (optional, defaults to `qconfig.json`)
-
-## Error Handling
-
-The script includes error handling for common issues such as:
-
-- Missing configuration files
-- Invalid JSON in configuration files
-- File not found errors
-- AWS Q API errors
-
-If you encounter any issues, check the error messages for guidance.
 
 ## Contributing
 
-Contributions to improve the script are welcome. Please feel free to submit pull requests or open issues to discuss potential changes.
+Contributions to improve DejaQ are welcome. Please feel free to submit pull requests or open issues to discuss potential changes.
 
 ## License
 
-This project is released under the MIT License:
-
-```
-MIT License
-
-Copyright (c) 2024 Stefano Marzani
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-```
-
-This MIT License allows for unrestricted reuse and modification of this code by any developer, including for commercial purposes, provided that the above copyright notice and permission notice are included in all copies or substantial portions of the Software.
+This project is released under the MIT License. See the LICENSE file for details.
