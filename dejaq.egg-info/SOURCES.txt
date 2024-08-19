@@ -1,0 +1,17 @@
+README.md
+pyproject.toml
+setup.py
+awsutils/__init__.py
+awsutils/awsutils.py
+awsutils/q_service.py
+dejaq/__init__.py
+dejaq/__main__.py
+dejaq/cli.py
+dejaq.egg-info/PKG-INFO
+dejaq.egg-info/SOURCES.txt
+dejaq.egg-info/dependency_links.txt
+dejaq.egg-info/entry_points.txt
+dejaq.egg-info/requires.txt
+dejaq.egg-info/top_level.txt
+tests/__init__.py
+tests/test_q_service.py

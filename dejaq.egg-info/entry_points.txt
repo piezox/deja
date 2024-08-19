@@ -1,0 +1,2 @@
+[console_scripts]
+dejaq = dejaq.cli:main

@@ -1,20 +1,28 @@
+import base64
+import os
 from .awsutils import get_q_business_client, load_config
 
 class QService:
-    def __init__(self, profile='default'):
+    def __init__(self, profile='default', region=None):
         self.config = load_config()
-        self.client = get_q_business_client(profile)
+        self.client = get_q_business_client(profile, region)
 
     def upload_to_aws_q(self, source):
         with open(source, 'rb') as file:
             document_content = file.read()
+            encoded_content = base64.b64encode(document_content).decode('utf-8')
+
+        # Get file extension and map to content type
+        _, file_extension = os.path.splitext(source)
+        content_type = self.get_content_type(file_extension)
 
         document = {
-            'id': "id",
-            'title': "title",
+            'id': os.path.basename(source),  # Use filename as id
+            'title': os.path.basename(source),  # Use filename as title
             'content': {
-                'blob': document_content
-            }
+                'blob': encoded_content
+            },
+            'contentType': content_type
         }
 
         try:
@@ -32,6 +40,28 @@ class QService:
                 print(response)
         except Exception as e:
             print(f"An error occurred: {str(e)}")
+
+    @staticmethod
+    def get_content_type(file_extension):
+        content_types = {
+            '.pdf': 'PDF',
+            '.html': 'HTML',
+            '.htm': 'HTML',
+            '.doc': 'MS_WORD',
+            '.docx': 'MS_WORD',
+            '.txt': 'PLAIN_TEXT',
+            '.ppt': 'PPT',
+            '.pptx': 'PPT',
+            '.rtf': 'RTF',
+            '.xml': 'XML',
+            '.xsl': 'XSLT',
+            '.xls': 'MS_EXCEL',
+            '.xlsx': 'MS_EXCEL',
+            '.csv': 'CSV',
+            '.json': 'JSON',
+            '.md': 'MD'
+        }
+        return content_types.get(file_extension.lower(), 'PLAIN_TEXT')
 
     def add_url_to_webcrawler(self, source, crawler_name):
         try:
