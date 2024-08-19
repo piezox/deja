@@ -1,6 +1,10 @@
 # Ignore the actual configuration file
 qconfig.json
 
+# Ignore Misc
+RAND_RR1478.pdf
+AWSQC.pdf
+
 # Ignore any .env files that might contain sensitive information
 *.env
 
@@ -9,6 +13,42 @@ __pycache__/
 *.py[cod]
 *$py.class
 
-# Ignore Misc
-RAND_RR1478.pdf
-AWSQC.pdf
+# Virtual environment
+dejaq_env/
+venv/
+env/
+
+# Python egg metadata
+*.egg-info/
+*.egg
+
+# Python cache files
+__pycache__/
+*.py[cod]
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# pyenv
+.python-version
+
+# Environment variables
+.env
+
+# IDE specific files
+.vscode/
+.idea/
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
