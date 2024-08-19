@@ -13,5 +13,6 @@ dejaq.egg-info/dependency_links.txt
 dejaq.egg-info/entry_points.txt
 dejaq.egg-info/requires.txt
 dejaq.egg-info/top_level.txt
+dejaq_env/bin/jp.py
 tests/__init__.py
 tests/test_q_service.py
