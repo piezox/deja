@@ -2,9 +2,19 @@ import os
 import boto3
 import json
 from botocore.exceptions import ClientError, NoCredentialsError, ProfileNotFound
-from typing import Dict
+from typing import Any, Dict
 
-def 
+def _create_config_from_template(config_path: str, template_path: str) -> Dict[str, Any]:
+    """
+    Create a configuration file from a template if it doesn't exist.
+    """
+    with open(template_path, 'r') as f:
+        template = json.load(f)
+
+    with open(config_path, 'w') as f:
+        json.dump(template, f, indent=4)
+
+    return template
 
 def load_config(config_file: str = 'qconfig.json', template_file: str = 'qconfig.template.json') -> Dict[str, Any]:
     """
